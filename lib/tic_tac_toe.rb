@@ -3,6 +3,17 @@ class TicTacToe
     @board = Array.new(9, " ")
   end
 
+  def play
+    until over? || draw?
+      turn
+    end
+    if won?
+      puts "Congratulations #{winner}!"
+    elsif draw?
+      puts "Cat's Game!"
+    end
+  end
+
   def position_taken?(index)
     !(@board[index].nil? || @board[index] == " ")
   end
@@ -95,17 +106,6 @@ class TicTacToe
   def winner
     if won?
       return @board[won?[0]]
-    end
-  end
-
-  def play
-    until over? || draw?
-      turn
-    end
-    if won?
-      puts "Congratulations #{winner}!"
-    elsif draw?
-      puts "Cat's Game!"
     end
   end
 end

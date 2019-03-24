@@ -99,13 +99,13 @@ class TicTacToe
   end
 
   def play
-    until over? || draw?
+    display_board
+    while !over? && !draw? #draw? method is obsolete but required by tests
       turn
     end
     if won?
       puts "Congratulations #{winner}!"
-    elsif draw?
+    else
       puts "Cat's Game!"
     end
   end
-end

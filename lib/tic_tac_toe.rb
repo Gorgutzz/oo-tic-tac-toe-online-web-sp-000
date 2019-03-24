@@ -2,22 +2,17 @@ class TicTacToe
   def initialize
     @board = Array.new(9, " ")
   end
-
-  def position_taken?(index)
-    !(@board[index].nil? || @board[index] == " ")
+  def play
+    display_board
+    while !over? && !draw? #draw? method is obsolete but required by tests
+      turn
+    end
+    if won?
+      puts "Congratulations #{winner}!"
+    else
+      puts "Cat's Game!"
+    end
   end
-
-
-  WIN_COMBINATIONS = [
-    [0,1,2],
-    [3,4,5],
-    [6,7,8],
-    [0,3,6],
-    [1,4,7],
-    [0,4,8],
-    [2,4,6],
-    [2,5,8],
-  ]
 
   def display_board
     puts " #{@board[0]} | #{@board[1]} | #{@board[2]} "
@@ -27,16 +22,12 @@ class TicTacToe
     puts " #{@board[6]} | #{@board[7]} | #{@board[8]} "
   end
 
-  def input_to_index(user_input)
-    user_input.to_i - 1
+  def input_to_index(input)
+    input.to_i - 1
   end
 
   def move(index, current_player)
     @board[index] = current_player
-  end
-
-  def position_taken?(location)
-    @board[location] != " " && @board[location] != ""
   end
 
   def valid_move?(index)
@@ -56,26 +47,44 @@ class TicTacToe
   end
 
   def turn_count
-    turn = 0
-    @board.each do |char|
-      if char == "X" || char == "O"
-        turn += 1
+    turns = 0
+    @board.each do |index|
+      if index == "X" || index == "O"
+        turns += 1
       end
     end
-     turn
+    turns
   end
 
   def current_player
-    if turn_count % 2 == 0
-      return "X"
-    else
-      return "O"
+    turns = turn_count
+    player = turns % 2
+    if player == 0
+      "X"
+    elsif player == 1
+      "O"
     end
   end
 
+def position_taken?(index)
+  !(@board[index].nil? || @board[index] == " ")
+end
+
+  WIN_COMBINATIONS = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,4,8],
+    [2,4,6],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+  ]
+
   def won?
-    WIN_COMBINATIONS.find do |combo|
-      combo.all?{|index| @board[index] == "X"} || combo.all?{|index| @board[index] == "O"}
+    WIN_COMBINATIONS.detect do |combination|
+      combination.all?{|index| @board[index] == "X"} ||
+      combination.all?{|index| @board[index] == "O"}
     end
   end
 
@@ -84,28 +93,18 @@ class TicTacToe
   end
 
   def draw?
-    if full? && !won?
+    if full?
+      !won?
     end
   end
 
   def over?
-    if won? || draw? || full?
+    full? || won?
   end
 
   def winner
     if won?
-      return @board[won?[0]]
+      @board[won?[0]]
     end
   end
-
-  def play
-    display_board
-    while !over? && !draw? #draw? method is obsolete but required by tests
-      turn
-    end
-    if won?
-      puts "Congratulations #{winner}!"
-    else
-      puts "Cat's Game!"
-    end
-  end
+end 
